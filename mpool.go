@@ -6,7 +6,7 @@ import (
 )
 
 // MpoolPush pushes a signed message to mempool.
-func (c *Client) MpoolPush(ctx context.Context, sm *SignedMessage) (*cid.Cid, error) {
+func (c *Client) MpoolPush(ctx context.Context, sm *SignedMessage) (cid.Cid, error) {
 	var id cid.Cid
-	return &id, c.Request(ctx, c.FilecoinMethod("MpoolPush"), &id, sm)
+	return id, c.Request(ctx, c.FilecoinMethod("MpoolPush"), &id, sm)
 }

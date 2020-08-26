@@ -2,6 +2,7 @@ package filecoin
 
 import (
 	"context"
+	"github.com/filecoin-project/go-address"
 	"github.com/shopspring/decimal"
 	"testing"
 )
@@ -10,12 +11,15 @@ import (
 func TestClient_MpoolPush(t *testing.T) {
 	c := testClient()
 
+	from, _ := address.NewFromString("t1e3soclcq34tq7wmykp7xkkmpkzjnghumm3syyay")
+	to, _ := address.NewFromString("t1r6egk7djfy7krbw7zdswbgdhep4hge5fecwmsoi")
+
 	msg := &Message{
 		Version:    0,
-		To:         "t1r6egk7djfy7krbw7zdswbgdhep4hge5fecwmsoi",
-		From:       "t1e3soclcq34tq7wmykp7xkkmpkzjnghumm3syyay",
+		To:         to,
+		From:       from,
 		Nonce:      0,
-		Value:      decimal.RequireFromString("10000000000000000000"),
+		Value:      FromFil(decimal.NewFromFloat(1)),
 		GasLimit:   0,
 		GasFeeCap:  decimal.Zero,
 		GasPremium: decimal.Zero,

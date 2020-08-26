@@ -8,50 +8,50 @@ import (
 
 // ChainGetMessage reads a message referenced by the specified CID from the chain blockstore.
 func (c *Client) ChainGetMessage(ctx context.Context, id cid.Cid) (*Message, error) {
-	var message Message
-	return &message, c.Request(ctx, c.FilecoinMethod("ChainGetMessage"), &message, id)
+	var message *Message
+	return message, c.Request(ctx, c.FilecoinMethod("ChainGetMessage"), &message, id)
 }
 
 // ChainGetBlockMessages returns messages stored in the specified block.
 func (c *Client) ChainGetBlockMessages(ctx context.Context, id cid.Cid) (*BlockMessages, error) {
-	var bm BlockMessages
-	return &bm, c.Request(ctx, c.FilecoinMethod("ChainGetBlockMessages"), &bm, id)
+	var bm *BlockMessages
+	return bm, c.Request(ctx, c.FilecoinMethod("ChainGetBlockMessages"), &bm, id)
 }
 
 // ChainHead returns the current head of the chain.
 func (c *Client) ChainHead(ctx context.Context, ) (*TipSet, error) {
-	var ts TipSet
-	return &ts, c.Request(ctx, c.FilecoinMethod("ChainHead"), &ts)
+	var ts *TipSet
+	return ts, c.Request(ctx, c.FilecoinMethod("ChainHead"), &ts)
 }
 
 // ChainGetTipSetByHeight looks back for a tipset at the specified epoch. If there are no blocks at the specified epoch, a tipset at an earlier epoch will be returned.
-func (c *Client) ChainGetTipSetByHeight(ctx context.Context, height int64, cids []cid.Cid) (*TipSet, error) {
-	var ts TipSet
-	return &ts, c.Request(ctx, c.FilecoinMethod("ChainGetTipSetByHeight"), &ts, height, cids)
+func (c *Client) ChainGetTipSetByHeight(ctx context.Context, height int64, tsk TipSetKey) (*TipSet, error) {
+	var ts *TipSet
+	return ts, c.Request(ctx, c.FilecoinMethod("ChainGetTipSetByHeight"), &ts, height, tsk)
 }
 
 // ChainExport returns a stream of bytes with CAR dump of chain data.
-func (c *Client) ChainExport(ctx context.Context, tsk []cid.Cid) ([]byte, error) {
+func (c *Client) ChainExport(ctx context.Context, tsk TipSetKey) ([]byte, error) {
 	var result []byte
 	return result, c.Request(ctx, c.FilecoinMethod("ChainExport"), &result, tsk)
 }
 
 // ChainGetBlock returns the block specified by the given CID.
 func (c *Client) ChainGetBlock(ctx context.Context, id cid.Cid) (*BlockHeader, error) {
-	var bh BlockHeader
-	return &bh, c.Request(ctx, c.FilecoinMethod("ChainGetBlock"), &bh, id)
+	var bh *BlockHeader
+	return bh, c.Request(ctx, c.FilecoinMethod("ChainGetBlock"), &bh, id)
 }
 
 // ChainGetGenesis returns the genesis tipset.
 func (c *Client) ChainGetGenesis(ctx context.Context) (*TipSet, error) {
-	var ts TipSet
-	return &ts, c.Request(ctx, c.FilecoinMethod("ChainGetGenesis"), &ts)
+	var ts *TipSet
+	return ts, c.Request(ctx, c.FilecoinMethod("ChainGetGenesis"), &ts)
 }
 
 // ChainGetNode
 func (c *Client) ChainGetNode(ctx context.Context, p string) (*IpldObject, error) {
-	var ipld IpldObject
-	return &ipld, c.Request(ctx, c.FilecoinMethod("ChainGetNode"), &ipld, p)
+	var ipld *IpldObject
+	return ipld, c.Request(ctx, c.FilecoinMethod("ChainGetNode"), &ipld, p)
 }
 
 // ChainGetParentMessages returns messages stored in parent tipset of the specified block.
@@ -67,27 +67,27 @@ func (c *Client) ChainGetParentReceipts(ctx context.Context, id cid.Cid) ([]*Mes
 }
 
 // ChainGetPath returns a set of revert/apply operations needed to get from one tipset to another
-func (c *Client) ChainGetPath(ctx context.Context, from []cid.Cid, to []cid.Cid) (*HeadChange, error) {
-	var hc HeadChange
-	return &hc, c.Request(ctx, c.FilecoinMethod("ChainGetPath"), &hc, from, to)
+func (c *Client) ChainGetPath(ctx context.Context, from TipSetKey, to TipSetKey) (*HeadChange, error) {
+	var hc *HeadChange
+	return hc, c.Request(ctx, c.FilecoinMethod("ChainGetPath"), &hc, from, to)
 }
 
 // ChainGetRandomnessFromBeacon is used to sample the beacon for randomness.
-func (c *Client) ChainGetRandomnessFromBeacon(ctx context.Context, tsk []cid.Cid, personalization int64, randEpoch int64, entropy []byte) ([]byte, error) {
+func (c *Client) ChainGetRandomnessFromBeacon(ctx context.Context, tsk TipSetKey, personalization int64, randEpoch int64, entropy []byte) ([]byte, error) {
 	var result []byte
 	return result, c.Request(ctx, c.FilecoinMethod("ChainGetRandomnessFromBeacon"), &result, tsk, personalization, randEpoch, entropy)
 }
 
 // ChainGetRandomnessFromTickets is used to sample the chain for randomness.
-func (c *Client) ChainGetRandomnessFromTickets(ctx context.Context, tsk []cid.Cid, personalization int64, randEpoch int64, entropy []byte) ([]byte, error) {
+func (c *Client) ChainGetRandomnessFromTickets(ctx context.Context, tsk TipSetKey, personalization int64, randEpoch int64, entropy []byte) ([]byte, error) {
 	var result []byte
 	return result, c.Request(ctx, c.FilecoinMethod("ChainGetRandomnessFromTickets"), &result, tsk, personalization, randEpoch, entropy)
 }
 
 // ChainGetTipSet returns the tipset specified by the given TipSetKey.
-func (c *Client) ChainGetTipSet(ctx context.Context, tsk []cid.Cid) (*TipSet, error) {
-	var ts TipSet
-	return &ts, c.Request(ctx, c.FilecoinMethod("ChainGetTipSet"), &ts, tsk)
+func (c *Client) ChainGetTipSet(ctx context.Context, tsk TipSetKey) (*TipSet, error) {
+	var ts *TipSet
+	return ts, c.Request(ctx, c.FilecoinMethod("ChainGetTipSet"), &ts, tsk)
 }
 
 // ChainHasObj checks if a given CID exists in the chain blockstore.
@@ -108,7 +108,7 @@ func (c *Client) ChainReadObj(ctx context.Context, obj cid.Cid) ([]byte, error) 
 }
 
 // ChainSetHead forcefully sets current chain head. Use with caution.
-func (c *Client) ChainSetHead(ctx context.Context, tsk []cid.Cid) error {
+func (c *Client) ChainSetHead(ctx context.Context, tsk TipSetKey) error {
 	return c.Request(ctx, c.FilecoinMethod("ChainSetHead"), nil, tsk)
 }
 
@@ -119,7 +119,7 @@ func (c *Client) ChainStatObj(ctx context.Context, obj, base cid.Cid) (ObjStat, 
 }
 
 // ChainTipSetWeight computes weight for the specified tipset.
-func (c *Client) ChainTipSetWeight(ctx context.Context, tsk []cid.Cid) (decimal.Decimal, error) {
+func (c *Client) ChainTipSetWeight(ctx context.Context, tsk TipSetKey) (decimal.Decimal, error) {
 	var d decimal.Decimal
 	return d, c.Request(ctx, c.FilecoinMethod("ChainTipSetWeight"), &d, tsk)
 }

@@ -10,7 +10,7 @@ import (
 func TestClient_StateGetReceipt(t *testing.T) {
 	c := testClient()
 
-	id, err := cid.Parse("bafy2bzacea64rujzydbpzglzbe2gs74v2p2tcxgvyuzupb6fzcydrcssqg4fa")
+	id, err := cid.Parse("bafy2bzacebrx3sb5do2b7cqgsnys2lkxtdq3pvjtgmdt2wclwmrtjeraa7x3q")
 	if err != nil {
 		t.Error(err)
 	}
@@ -21,4 +21,26 @@ func TestClient_StateGetReceipt(t *testing.T) {
 	}
 
 	t.Log(mr)
+}
+
+// 查询消息状态
+// Receipt 为空表示未执行
+func TestClient_StateSearchMsg(t *testing.T) {
+	c := testClient()
+
+	id, err := cid.Parse("bafy2bzacebrx3sb5do2b7cqgsnys2lkxtdq3pvjtgmdt2wclwmrtjeraa7x3q")
+	if err != nil {
+		t.Error(err)
+	}
+
+	msg, err := c.StateSearchMsg(context.Background(), id)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if msg == nil {
+		t.Log("nil")
+	} else {
+		t.Log(msg)
+	}
 }

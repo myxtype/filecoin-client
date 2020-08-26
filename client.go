@@ -96,12 +96,9 @@ func (c *Client) Request(ctx context.Context, method string, result interface{},
 	if response.Error != nil {
 		return fmt.Errorf("jsonrpc call: %v", response.Error)
 	}
+	if response.Result == nil {
+		return nil
+	}
 
 	return response.ReadFromResult(result)
-}
-
-// ClientCalcCommP calculates the CommP for a specified file
-func (c *Client) ClientCalcCommP(ctx context.Context, inpath string) (*CommPRet, error) {
-	var cpr CommPRet
-	return &cpr, c.Request(ctx, c.FilecoinMethod("ClientCalcCommP"), &cpr, inpath)
 }

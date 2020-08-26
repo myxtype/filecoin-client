@@ -2,10 +2,14 @@ package filecoin
 
 import (
 	"fmt"
+	"github.com/filecoin-project/go-address"
 	"github.com/ipfs/go-cid"
 	"github.com/shopspring/decimal"
 	"math"
+	"time"
 )
+
+type TipSetKey []cid.Cid
 
 type Version struct {
 	Version    string
@@ -33,11 +37,6 @@ type ObjStat struct {
 	Links uint64
 }
 
-type CommPRet struct {
-	Root cid.Cid
-	Size uint64
-}
-
 type KeyInfo struct {
 	Type       string `json:"Type"` // secp256k1
 	PrivateKey []byte `json:"PrivateKey"`
@@ -50,8 +49,8 @@ type Signature struct {
 
 type Message struct {
 	Version    uint64          `json:"Version"`
-	To         string          `json:"To"`
-	From       string          `json:"From"`
+	To         address.Address `json:"To"`
+	From       address.Address `json:"From"`
 	Nonce      uint64          `json:"Nonce"`
 	Value      decimal.Decimal `json:"Value"`
 	GasLimit   int64           `json:"GasLimit"`
@@ -73,7 +72,7 @@ type SignedMessage struct {
 type BlockMessages struct {
 	BlsMessages   []*Message       `json:"BlsMessages"`
 	SecpkMessages []*SignedMessage `json:"SecpkMessages"`
-	Cids          []*cid.Cid       `json:"Cids"`
+	Cids          []cid.Cid        `json:"Cids"`
 }
 
 type Actor struct {
@@ -136,4 +135,51 @@ func (t SigType) Name() (string, error) {
 	default:
 		return "", fmt.Errorf("invalid signature type: %d", t)
 	}
+}
+
+type Loc struct {
+	File     string
+	Line     int
+	Function string
+}
+
+type GasTrace struct {
+	Name string
+
+	Location          []Loc `json:"loc"`
+	TotalGas          int64 `json:"tg"`
+	ComputeGas        int64 `json:"cg"`
+	StorageGas        int64 `json:"sg"`
+	TotalVirtualGas   int64 `json:"vtg"`
+	VirtualComputeGas int64 `json:"vcg"`
+	VirtualStorageGas int64 `json:"vsg"`
+
+	TimeTaken time.Duration `json:"tt"`
+	Extra     interface{}   `json:"ex,omitempty"`
+}
+
+type ExecutionTrace struct {
+	Msg        *Message
+	MsgRct     *MessageReceipt
+	Error      string
+	Duration   time.Duration
+	GasCharges []*GasTrace
+
+	Subcalls []ExecutionTrace
+}
+
+type InvocResult struct {
+	Msg            *Message
+	MsgRct         *MessageReceipt
+	ExecutionTrace ExecutionTrace
+	Error          string
+	Duration       time.Duration
+}
+
+type MsgLookup struct {
+	Message   cid.Cid // Can be different than requested, in case it was replaced, but only gas values changed
+	Receipt   MessageReceipt
+	ReturnDec interface{}
+	TipSet    TipSetKey
+	Height    int64
 }

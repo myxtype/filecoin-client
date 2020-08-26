@@ -10,7 +10,7 @@ import (
 func TestClient_ChainGetMessage(t *testing.T) {
 	c := testClient()
 
-	id, err := cid.Parse("bafy2bzacec2iz32npq2ytfj4d4eeppidpbqjfd3glrrset7cham7sfpzinq24")
+	id, err := cid.Parse("bafy2bzacebrx3sb5do2b7cqgsnys2lkxtdq3pvjtgmdt2wclwmrtjeraa7x3q")
 	if err != nil {
 		t.Error(err)
 	}
