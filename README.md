@@ -8,6 +8,12 @@
 
 说明请查询client_test文件。
 
+
+# 安装
+
+`go get github.com/myxtype/filecoin-client`
+
+
 # 使用
 
 ```go
