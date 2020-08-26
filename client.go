@@ -36,24 +36,24 @@ func (c *clientResponse) ReadFromResult(x interface{}) error {
 	return json.Unmarshal(*c.Result, x)
 }
 
-type client struct {
+type Client struct {
 	addr  string
 	token string
 	id    int64
 }
 
-func NewClient(addr string, token string) *client {
-	return &client{
+func NewClient(addr string, token string) *Client {
+	return &Client{
 		addr:  addr,
 		token: token,
 	}
 }
 
-func (c *client) FilecoinMethod(method string) string {
+func (c *Client) FilecoinMethod(method string) string {
 	return fmt.Sprintf("Filecoin.%s", method)
 }
 
-func (c *client) Request(ctx context.Context, method string, result interface{}, params ...interface{}) error {
+func (c *Client) Request(ctx context.Context, method string, result interface{}, params ...interface{}) error {
 	request := &clientRequest{
 		Id:      atomic.AddInt64(&c.id, 1),
 		Version: "2.0",

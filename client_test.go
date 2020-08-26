@@ -10,7 +10,7 @@ import (
 
 // The Lotus Node
 // The default token is in ~/.lotus/token
-func testClient() *client {
+func testClient() *Client {
 	return NewClient("http://127.0.0.1:1234/rpc/v0", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.cF__3r_0IR9KwZ2nLkqcBW8vuPePruZieJAVvTAoUA4")
 }
 
