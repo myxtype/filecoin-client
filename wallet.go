@@ -30,14 +30,14 @@ func (c *Client) WalletExport(ctx context.Context, addr address.Address) (*KeyIn
 }
 
 // WalletHas indicates whether the given address is in the wallet.
-func (c *Client) WalletHas(ctx context.Context, addr string) (bool, error) {
+func (c *Client) WalletHas(ctx context.Context, addr address.Address) (bool, error) {
 	var has bool
 	return has, c.Request(ctx, c.FilecoinMethod("WalletHas"), &has, addr)
 }
 
 // WalletImport receives a KeyInfo, which includes a private key, and imports it into the wallet.
-func (c *Client) WalletImport(ctx context.Context, ki *KeyInfo) (string, error) {
-	var addr string
+func (c *Client) WalletImport(ctx context.Context, ki *KeyInfo) (address.Address, error) {
+	var addr address.Address
 	return addr, c.Request(ctx, c.FilecoinMethod("WalletImport"), &addr, ki)
 }
 
