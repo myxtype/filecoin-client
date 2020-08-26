@@ -8,8 +8,30 @@
 
 说明请查询client_test文件。
 
+# 使用
+
+```go
+package main
+
+func main() {
+    
+    client := NewClient("http://127.0.0.1:1234/rpc/v0", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.cF__3r_0IR9KwZ2nLkqcBW8vuPePruZieJAVvTAoUA4")
+
+    b, err := client.WalletBalance(context.Background(), "t1e3soclcq34tq7wmykp7xkkmpkzjnghumm3syyay")
+    if err != nil {
+        //
+    }
+
+    fmt.Println(b.String())
+}
+```
+
 # 离线签名版
 
 我将在后续提供离线签名版（不需要自行搭建Node），因为现在https://infura.io 还未开放Lotus Node的API，所有离线签名版将在后续更新。
 
 具体实现逻辑在官方库中：https://github.com/filecoin-project/go-filecoin
+
+# Lotus文档
+
+https://lotu.sh/en+api-methods

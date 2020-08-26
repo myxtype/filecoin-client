@@ -43,16 +43,25 @@ type Client struct {
 }
 
 func NewClient(addr string, token string) *Client {
-	return &Client{
-		addr:  addr,
-		token: token,
-	}
+	return New(addr).SetToken(token)
 }
 
+func New(addr string) *Client {
+	return &Client{addr: addr}
+}
+
+// SetToken set Authorization token
+func (c *Client) SetToken(token string) *Client {
+	c.token = token
+	return c
+}
+
+// Namespace Filecoin
 func (c *Client) FilecoinMethod(method string) string {
 	return fmt.Sprintf("Filecoin.%s", method)
 }
 
+// Request call RPC method
 func (c *Client) Request(ctx context.Context, method string, result interface{}, params ...interface{}) error {
 	request := &clientRequest{
 		Id:      atomic.AddInt64(&c.id, 1),
@@ -89,4 +98,10 @@ func (c *Client) Request(ctx context.Context, method string, result interface{},
 	}
 
 	return response.ReadFromResult(result)
+}
+
+// ClientCalcCommP calculates the CommP for a specified file
+func (c *Client) ClientCalcCommP(ctx context.Context, inpath string) (*CommPRet, error) {
+	var cpr CommPRet
+	return &cpr, c.Request(ctx, c.FilecoinMethod("ClientCalcCommP"), &cpr, inpath)
 }

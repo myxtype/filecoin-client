@@ -1,9 +1,42 @@
 package filecoin
 
 import (
+	"fmt"
 	"github.com/ipfs/go-cid"
 	"github.com/shopspring/decimal"
+	"math"
 )
+
+type Version struct {
+	Version    string
+	APIVersion uint32
+	BlockDelay uint64
+}
+
+type BeaconEntry struct {
+	Round uint64
+	Data  []byte
+}
+
+type IpldObject struct {
+	Cid cid.Cid
+	Obj interface{}
+}
+
+type HeadChange struct {
+	Type string
+	Val  *TipSet
+}
+
+type ObjStat struct {
+	Size  uint64
+	Links uint64
+}
+
+type CommPRet struct {
+	Root cid.Cid
+	Size uint64
+}
 
 type KeyInfo struct {
 	Type       string `json:"Type"` // secp256k1
@@ -68,7 +101,6 @@ type BlockHeader struct {
 	BlockSig              *Signature
 	ForkSignaling         uint64
 	ParentBaseFee         decimal.Decimal
-	validated             bool
 }
 
 type TipSet struct {
@@ -82,4 +114,26 @@ type MessageReceipt struct {
 	ExitCode int64 // 状态为0表示成功
 	Return   []byte
 	GasUsed  int64
+}
+
+type SigType byte
+
+const (
+	SigTypeUnknown = SigType(math.MaxUint8)
+
+	SigTypeSecp256k1 = SigType(iota) // Most
+	SigTypeBLS
+)
+
+func (t SigType) Name() (string, error) {
+	switch t {
+	case SigTypeUnknown:
+		return "unknown", nil
+	case SigTypeSecp256k1:
+		return "secp256k1", nil
+	case SigTypeBLS:
+		return "bls", nil
+	default:
+		return "", fmt.Errorf("invalid signature type: %d", t)
+	}
 }

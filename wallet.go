@@ -17,6 +17,11 @@ func (c *Client) WalletDefaultAddress(ctx context.Context) (string, error) {
 	return addr, c.Request(ctx, c.FilecoinMethod("WalletDefaultAddress"), &addr)
 }
 
+// WalletDelete deletes an address from the wallet.
+func (c *Client) WalletDelete(ctx context.Context, addr string) error {
+	return c.Request(ctx, c.FilecoinMethod("WalletDelete"), nil, addr)
+}
+
 // WalletExport returns the private key of an address in the wallet.
 func (c *Client) WalletExport(ctx context.Context, addr string) (*KeyInfo, error) {
 	var ki KeyInfo
@@ -36,11 +41,13 @@ func (c *Client) WalletImport(ctx context.Context, ki *KeyInfo) (string, error) 
 }
 
 // WalletList lists all the addresses in the wallet.
-// todo
+func (c *Client) WalletList(ctx context.Context) ([]string, error) {
+	var addrs []string
+	return addrs, c.Request(ctx, c.FilecoinMethod("WalletList"), &addrs)
+}
 
 // WalletNew creates a new address in the wallet with the given sigType.
-// 通常sigType设为1
-func (c *Client) WalletNew(ctx context.Context, sigType int64) (string, error) {
+func (c *Client) WalletNew(ctx context.Context, sigType SigType) (string, error) {
 	var addr string
 	return addr, c.Request(ctx, c.FilecoinMethod("WalletNew"), &addr, sigType)
 }
@@ -62,4 +69,8 @@ func (c *Client) WalletSignMessage(ctx context.Context, addr string, message *Me
 	return &sm, c.Request(ctx, c.FilecoinMethod("WalletSignMessage"), &sm, addr, message)
 }
 
-// todo
+// WalletVerify takes an address, a signature, and some bytes, and indicates whether the signature is valid. The address does not have to be in the wallet.
+func (c *Client) WalletVerify(ctx context.Context, k string, msg []byte, sig *Signature) (bool, error) {
+	var ok bool
+	return ok, c.Request(ctx, c.FilecoinMethod("WalletVerify"), &ok, k, msg, sig)
+}
