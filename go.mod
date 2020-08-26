@@ -1,4 +1,4 @@
-module filecoin
+module github.com/myxtype/filecoin-client
 
 go 1.15
 
