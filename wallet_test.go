@@ -19,6 +19,7 @@ func TestClient_WalletBalance(t *testing.T) {
 	}
 
 	t.Log(b.String())
+	t.Log(ToFil(b).String())
 }
 
 func TestClient_WalletNew(t *testing.T) {

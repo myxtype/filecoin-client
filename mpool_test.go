@@ -28,7 +28,8 @@ func TestClient_MpoolPush(t *testing.T) {
 		Params:     nil,
 	}
 
-	msg, err := c.GasEstimateMessageGas(context.Background(), msg, &types.MessageSendSpec{MaxFee: decimal.RequireFromString("1000000000000")}, nil)
+	maxFee := FromFil(decimal.NewFromFloat(0.00001))
+	msg, err := c.GasEstimateMessageGas(context.Background(), msg, &types.MessageSendSpec{MaxFee: maxFee}, nil)
 	if err != nil {
 		t.Error(err)
 	}
