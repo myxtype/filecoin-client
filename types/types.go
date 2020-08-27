@@ -41,7 +41,7 @@ type KeyInfo struct {
 }
 
 type MessageSendSpec struct {
-	MaxFee string `json:"MaxFee"`
+	MaxFee decimal.Decimal `json:"MaxFee"`
 }
 
 type SignedMessage struct {
