@@ -1,11 +1,9 @@
-package filecoin
+package types
 
 import (
-	"fmt"
-	"github.com/filecoin-project/go-address"
 	"github.com/ipfs/go-cid"
+	"github.com/myxtype/filecoin-client/crypto"
 	"github.com/shopspring/decimal"
-	"math"
 	"time"
 )
 
@@ -42,31 +40,13 @@ type KeyInfo struct {
 	PrivateKey []byte `json:"PrivateKey"`
 }
 
-type Signature struct {
-	Type byte   `json:"Type"`
-	Data []byte `json:"Data"`
-}
-
-type Message struct {
-	Version    uint64          `json:"Version"`
-	To         address.Address `json:"To"`
-	From       address.Address `json:"From"`
-	Nonce      uint64          `json:"Nonce"`
-	Value      decimal.Decimal `json:"Value"`
-	GasLimit   int64           `json:"GasLimit"`
-	GasFeeCap  decimal.Decimal `json:"GasFeeCap"`
-	GasPremium decimal.Decimal `json:"GasPremium"`
-	Method     uint64          `json:"Method"`
-	Params     []byte          `json:"Params"`
-}
-
 type MessageSendSpec struct {
 	MaxFee string `json:"MaxFee"`
 }
 
 type SignedMessage struct {
-	Message   *Message   `json:"Message"`
-	Signature *Signature `json:"Signature"`
+	Message   *Message          `json:"Message"`
+	Signature *crypto.Signature `json:"Signature"`
 }
 
 type BlockMessages struct {
@@ -95,9 +75,9 @@ type BlockHeader struct {
 	ParentStateRoot       cid.Cid
 	ParentMessageReceipts cid.Cid
 	Messages              cid.Cid
-	BLSAggregate          *Signature
+	BLSAggregate          *crypto.Signature
 	Timestamp             uint64
-	BlockSig              *Signature
+	BlockSig              *crypto.Signature
 	ForkSignaling         uint64
 	ParentBaseFee         decimal.Decimal
 }
@@ -113,28 +93,6 @@ type MessageReceipt struct {
 	ExitCode int64 // 状态为0表示成功
 	Return   []byte
 	GasUsed  int64
-}
-
-type SigType byte
-
-const (
-	SigTypeUnknown = SigType(math.MaxUint8)
-
-	SigTypeSecp256k1 = SigType(iota) // Most
-	SigTypeBLS
-)
-
-func (t SigType) Name() (string, error) {
-	switch t {
-	case SigTypeUnknown:
-		return "unknown", nil
-	case SigTypeSecp256k1:
-		return "secp256k1", nil
-	case SigTypeBLS:
-		return "bls", nil
-	default:
-		return "", fmt.Errorf("invalid signature type: %d", t)
-	}
 }
 
 type Loc struct {

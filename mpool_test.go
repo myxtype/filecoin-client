@@ -3,6 +3,7 @@ package filecoin
 import (
 	"context"
 	"github.com/filecoin-project/go-address"
+	"github.com/myxtype/filecoin-client/types"
 	"github.com/shopspring/decimal"
 	"testing"
 )
@@ -14,7 +15,7 @@ func TestClient_MpoolPush(t *testing.T) {
 	from, _ := address.NewFromString("t1e3soclcq34tq7wmykp7xkkmpkzjnghumm3syyay")
 	to, _ := address.NewFromString("t1r6egk7djfy7krbw7zdswbgdhep4hge5fecwmsoi")
 
-	msg := &Message{
+	msg := &types.Message{
 		Version:    0,
 		To:         to,
 		From:       from,
@@ -27,7 +28,7 @@ func TestClient_MpoolPush(t *testing.T) {
 		Params:     nil,
 	}
 
-	msg, err := c.GasEstimateMessageGas(context.Background(), msg, &MessageSendSpec{MaxFee: "1000000000000"}, nil)
+	msg, err := c.GasEstimateMessageGas(context.Background(), msg, &types.MessageSendSpec{MaxFee: "1000000000000"}, nil)
 	if err != nil {
 		t.Error(err)
 	}
