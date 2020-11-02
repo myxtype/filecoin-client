@@ -3,9 +3,13 @@ package filecoin
 import (
 	"context"
 	"github.com/filecoin-project/go-address"
-	"github.com/myxtype/filecoin-client/crypto"
+	"github.com/filecoin-project/specs-actors/actors/crypto"
+	"github.com/myxtype/filecoin-client/sigs"
 	"github.com/myxtype/filecoin-client/types"
 	"github.com/shopspring/decimal"
+	"golang.org/x/xerrors"
+
+	_ "github.com/myxtype/filecoin-client/sigs/secp" // enable secp signatures
 )
 
 // WalletBalance returns the balance of the given address at the current head of the chain.
@@ -76,4 +80,50 @@ func (c *Client) WalletSignMessage(ctx context.Context, addr address.Address, me
 func (c *Client) WalletVerify(ctx context.Context, k string, msg []byte, sig *crypto.Signature) (bool, error) {
 	var ok bool
 	return ok, c.Request(ctx, c.FilecoinMethod("WalletVerify"), &ok, k, msg, sig)
+}
+
+// WalletSignMessage signs the given message with the given private key
+func (c *Client) WalletSignMessageLocal(sigType crypto.SigType, privkey []byte, message *types.Message) (*types.SignedMessage, error) {
+	mcid := message.Cid()
+
+	sig, err := sigs.Sign(sigType, privkey, mcid.Bytes())
+	if err != nil {
+		return nil, xerrors.Errorf("failed to sign message: %w", err)
+	}
+
+	return &types.SignedMessage{
+		Message:   message,
+		Signature: *sig,
+	}, nil
+}
+
+// WalletNewLocal generate an address locally and return the private key
+func (c *Client) WalletNewLocal(typ crypto.SigType) (*address.Address, []byte, error) {
+	pk, err := sigs.Generate(typ)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	publicKey, err := sigs.ToPublic(typ, pk)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var addr address.Address
+	switch typ {
+	case crypto.SigTypeSecp256k1:
+		addr, err = address.NewSecp256k1Address(publicKey)
+		if err != nil {
+			return nil, nil, xerrors.Errorf("converting Secp256k1 to address: %w", err)
+		}
+	//case crypto.SigTypeBLS:
+	//	addr, err = address.NewBLSAddress(publicKey)
+	//	if err != nil {
+	//		return nil, nil, xerrors.Errorf("converting BLS to address: %w", err)
+	//	}
+	default:
+		return nil, nil, xerrors.Errorf("unknown key type")
+	}
+
+	return &addr, pk, err
 }
