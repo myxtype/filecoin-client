@@ -1,8 +1,8 @@
 package types
 
 import (
-	"github.com/filecoin-project/specs-actors/actors/crypto"
 	"github.com/ipfs/go-cid"
+	"github.com/myxtype/filecoin-client/crypto"
 	"github.com/shopspring/decimal"
 	"time"
 )
@@ -46,7 +46,7 @@ type MessageSendSpec struct {
 
 type SignedMessage struct {
 	Message   *Message          `json:"Message"`
-	Signature crypto.Signature `json:"Signature"`
+	Signature *crypto.Signature `json:"Signature"`
 }
 
 type BlockMessages struct {

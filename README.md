@@ -39,27 +39,13 @@ func main() {
 }
 ```
 
-# 离线签名
+# 离线签名版
 
-离线签名已支持，详情轻查看wallet_test.go中`TestClient_WalletNewLocal` 和 `TestClient_WalletSignMessageLocal`。
+我将在后续提供离线签名版（不需要自行搭建Node），因为现在https://infura.io 还未开放Lotus Node的API，所以离线签名版将在后续更新。
 
-签名和地址生成目前仅支持`SigTypeSecp256k1`类型。
+具体实现逻辑在官方库中：https://github.com/filecoin-project/go-filecoin
 
-# 注意
-
-使用本库前，需要设置地址的网络类型，否则地址是以`t`开头的测试地址。
-
-```go
-import (
-	"github.com/filecoin-project/go-address"
-)
-
-func init() {
-	address.CurrentNetwork = address.Mainnet
-}
-```
-
-尽量放在init函数。
+官方库太过笨重，导致某些情况下编译不通过，不太方便加入实际业务项目中。
 
 # Lotus文档
 
