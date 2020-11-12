@@ -45,7 +45,13 @@ func main() {
 
 具体实现逻辑在官方库中：https://github.com/filecoin-project/go-filecoin
 
-官方库太过笨重，导致某些情况下编译不通过，不太方便加入实际业务项目中。
+离线签名版我尝试了很多次，但对于交叉编译的情况下不通过，主要是因为这个库`github.com/ipsn/go-secp256k1`
+
+就很郁闷，因为我们的项目太依赖交叉编译了，一般都是直接在开发机编译好，上传到服务器执行。
+
+提示这个错误：`go build github.com/ipsn/go-secp256k1: build constraints exclude all Go files in Path`
+
+有人知道怎么弄吗？
 
 # Lotus文档
 
