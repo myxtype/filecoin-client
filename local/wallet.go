@@ -11,8 +11,8 @@ import (
 	_ "github.com/myxtype/filecoin-client/sigs/secp"
 )
 
-// LocalWalletNew creates a new address in the wallet with the given sigType.
-func LocalWalletNew(typ types.KeyType) (*types.KeyInfo, *address.Address, error) {
+// WalletNew creates a new address in the wallet with the given sigType.
+func WalletNew(typ types.KeyType) (*types.KeyInfo, *address.Address, error) {
 	ctyp := ActSigType(typ)
 	if ctyp == crypto.SigTypeUnknown {
 		return nil, nil, xerrors.Errorf("unknown sig type: %s", typ)
@@ -47,6 +47,29 @@ func LocalWalletNew(typ types.KeyType) (*types.KeyInfo, *address.Address, error)
 		Type:       typ,
 		PrivateKey: pk,
 	}, &addr, nil
+}
+
+// WalletSign signs the given bytes using the KeyType and private key.
+func WalletSign(typ types.KeyType, pk []byte, data []byte) (*crypto.Signature, error) {
+	return sigs.Sign(ActSigType(typ), pk, data)
+}
+
+// WalletSignMessage signs the given message using the given private key.
+func WalletSignMessage(typ types.KeyType, pk []byte, msg *types.Message) (*types.SignedMessage, error) {
+	mb, err := msg.ToStorageBlock()
+	if err != nil {
+		return nil, xerrors.Errorf("serializing message: %w", err)
+	}
+
+	sig, err := WalletSign(typ, pk, mb.Cid().Bytes())
+	if err != nil {
+		return nil, xerrors.Errorf("failed to sign message: %w", err)
+	}
+
+	return &types.SignedMessage{
+		Message:   msg,
+		Signature: sig,
+	}, nil
 }
 
 func ActSigType(typ types.KeyType) crypto.SigType {
