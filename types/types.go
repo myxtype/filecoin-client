@@ -1,8 +1,8 @@
 package types
 
 import (
+	"github.com/filecoin-project/go-state-types/crypto"
 	"github.com/ipfs/go-cid"
-	"github.com/myxtype/filecoin-client/crypto"
 	"github.com/shopspring/decimal"
 	"time"
 )
@@ -33,11 +33,6 @@ type HeadChange struct {
 type ObjStat struct {
 	Size  uint64
 	Links uint64
-}
-
-type KeyInfo struct {
-	Type       string `json:"Type"` // secp256k1
-	PrivateKey []byte `json:"PrivateKey"`
 }
 
 type MessageSendSpec struct {

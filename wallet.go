@@ -3,7 +3,7 @@ package filecoin
 import (
 	"context"
 	"github.com/filecoin-project/go-address"
-	"github.com/myxtype/filecoin-client/crypto"
+	"github.com/filecoin-project/go-state-types/crypto"
 	"github.com/myxtype/filecoin-client/types"
 	"github.com/shopspring/decimal"
 )
@@ -49,10 +49,10 @@ func (c *Client) WalletList(ctx context.Context) ([]address.Address, error) {
 	return addrs, c.Request(ctx, c.FilecoinMethod("WalletList"), &addrs)
 }
 
-// WalletNew creates a new address in the wallet with the given sigType.
-func (c *Client) WalletNew(ctx context.Context, sigType crypto.SigType) (address.Address, error) {
+// WalletNew creates a new address in the wallet with the given KeyType.
+func (c *Client) WalletNew(ctx context.Context, typ types.KeyType) (address.Address, error) {
 	var addr address.Address
-	return addr, c.Request(ctx, c.FilecoinMethod("WalletNew"), &addr, sigType)
+	return addr, c.Request(ctx, c.FilecoinMethod("WalletNew"), &addr, typ)
 }
 
 // WalletSetDefault marks the given address as as the default one.

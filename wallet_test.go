@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"github.com/filecoin-project/go-address"
-	"github.com/myxtype/filecoin-client/crypto"
+	"github.com/myxtype/filecoin-client/types"
 	"testing"
 )
 
@@ -27,7 +27,7 @@ func TestClient_WalletNew(t *testing.T) {
 	c := testClient()
 
 	// t1r6egk7djfy7krbw7zdswbgdhep4hge5fecwmsoi
-	addr, err := c.WalletNew(context.Background(), crypto.SigTypeSecp256k1)
+	addr, err := c.WalletNew(context.Background(), types.KTSecp256k1)
 	if err != nil {
 		t.Error(err)
 	}
