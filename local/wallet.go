@@ -7,6 +7,7 @@ import (
 	"github.com/myxtype/filecoin-client/types"
 	"golang.org/x/xerrors"
 
+	_ "github.com/myxtype/filecoin-client/sigs/bls"
 	_ "github.com/myxtype/filecoin-client/sigs/secp"
 )
 

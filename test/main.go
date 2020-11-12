@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	ki, addr, err := local.LocalWalletNew(types.KTSecp256k1)
+	ki, addr, err := local.LocalWalletNew(types.KTBLS)
 	if err != nil {
 		panic(err)
 	}
