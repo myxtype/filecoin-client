@@ -17,36 +17,47 @@ func WalletNew(typ types.KeyType) (*types.KeyInfo, *address.Address, error) {
 	if ctyp == crypto.SigTypeUnknown {
 		return nil, nil, xerrors.Errorf("unknown sig type: %s", typ)
 	}
+
 	pk, err := sigs.Generate(ctyp)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	publicKey, err := sigs.ToPublic(ctyp, pk)
+	addr, err := WalletPrivateToAddress(ctyp, pk)
 	if err != nil {
 		return nil, nil, err
-	}
-
-	var addr address.Address
-	switch typ {
-	case types.KTSecp256k1:
-		addr, err = address.NewSecp256k1Address(publicKey)
-		if err != nil {
-			return nil, nil, xerrors.Errorf("converting Secp256k1 to address: %w", err)
-		}
-	case types.KTBLS:
-		addr, err = address.NewBLSAddress(publicKey)
-		if err != nil {
-			return nil, nil, xerrors.Errorf("converting BLS to address: %w", err)
-		}
-	default:
-		return nil, nil, xerrors.Errorf("unsupported key type: %s", typ)
 	}
 
 	return &types.KeyInfo{
 		Type:       typ,
 		PrivateKey: pk,
-	}, &addr, nil
+	}, addr, nil
+}
+
+// WalletPrivateToAddress convert private key to public key address
+func WalletPrivateToAddress(typ crypto.SigType, pk []byte) (*address.Address, error) {
+	publicKey, err := sigs.ToPublic(typ, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	var addr address.Address
+	switch typ {
+	case crypto.SigTypeSecp256k1:
+		addr, err = address.NewSecp256k1Address(publicKey)
+		if err != nil {
+			return nil, xerrors.Errorf("converting Secp256k1 to address: %w", err)
+		}
+	case crypto.SigTypeBLS:
+		addr, err = address.NewBLSAddress(publicKey)
+		if err != nil {
+			return nil, xerrors.Errorf("converting BLS to address: %w", err)
+		}
+	default:
+		return nil, xerrors.Errorf("unsupported key type: %s", typ)
+	}
+
+	return &addr, nil
 }
 
 // WalletSign signs the given bytes using the KeyType and private key.
