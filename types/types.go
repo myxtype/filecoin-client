@@ -61,22 +61,6 @@ type Ticket struct {
 	VRFProof []byte
 }
 
-type BlockHeader struct {
-	Miner                 string
-	Ticket                *Ticket
-	Parents               []cid.Cid
-	ParentWeight          decimal.Decimal
-	Height                int64
-	ParentStateRoot       cid.Cid
-	ParentMessageReceipts cid.Cid
-	Messages              cid.Cid
-	BLSAggregate          *crypto.Signature
-	Timestamp             uint64
-	BlockSig              *crypto.Signature
-	ForkSignaling         uint64
-	ParentBaseFee         decimal.Decimal
-}
-
 type TipSet struct {
 	Cids   []cid.Cid
 	Blocks []*BlockHeader
