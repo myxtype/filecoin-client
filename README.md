@@ -39,15 +39,9 @@ func main() {
 
 # 离线签名版
 
-我将在后续提供离线签名版（不需要自行搭建Node），因为现在https://infura.io 还未开放Lotus Node的API，所以离线签名版将在后续更新。
+公共节点申请：https://infura.io
 
 具体实现逻辑在官方库中：https://github.com/filecoin-project/go-filecoin
-
-离线签名版我尝试了很多次，但对于交叉编译的情况下不通过，主要是因为这个库`github.com/ipsn/go-secp256k1`
-
-就很郁闷，因为我们的项目太依赖交叉编译了，一般都是直接在开发机编译好，上传到服务器执行。
-
-提示这个错误：`go build github.com/ipsn/go-secp256k1: build constraints exclude all Go files in Path`
 
 ```go
 package main
@@ -110,7 +104,16 @@ func main() {
 }
 ```
 
+离线签名版我尝试了很多次，但对于交叉编译的情况下不通过，主要是因为这个库`github.com/ipsn/go-secp256k1`
+
+就很郁闷，因为我们的项目太依赖交叉编译了，一般都是直接在开发机编译好，上传到服务器执行。
+
+提示这个错误：`go build github.com/ipsn/go-secp256k1: build constraints exclude all Go files in Path`
+
 有人知道怎么弄吗？
+
+问题：
+在Mac Os系统上不能编译为Linux程序，Windows上可正常编译为Linux程序。
 
 # Lotus文档
 
