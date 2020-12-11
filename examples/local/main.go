@@ -39,6 +39,7 @@ func main() {
 		Params:     nil,
 	}
 
+	// 离线签名
 	s, err := local.WalletSignMessage(types.KTSecp256k1, ki.PrivateKey, msg)
 	if err != nil {
 		panic(err)
@@ -46,6 +47,11 @@ func main() {
 
 	println(hex.EncodeToString(s.Signature.Data))
 	// 47bcbb167fd9040bd02dba02789bc7bc0463c290db1be9b07065c12a64fb84dc546bef7aedfba789d0d7ce2c4532f8fa0d2dd998985ad3ec1a8b064c26e4625a01
+
+	// 验证签名
+	if err := local.WalletVerifyMessage(s); err != nil {
+		panic(err)
+	}
 
 	client := filecoin.New("https://1lB5G4SmGdSTikOo7l6vYlsktdd:b58884915362a99b4fc18c2bf8af8358@filecoin.infura.io")
 

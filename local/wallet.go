@@ -64,6 +64,11 @@ func WalletSign(typ types.KeyType, pk []byte, data []byte) (*crypto.Signature, e
 	return sigs.Sign(ActSigType(typ), pk, data)
 }
 
+// WalletVerify verify the signed message
+func WalletVerify(sig *crypto.Signature, addr address.Address, msg []byte) error {
+	return sigs.Verify(sig, addr, msg)
+}
+
 // WalletSignMessage signs the given message using the given private key.
 func WalletSignMessage(typ types.KeyType, pk []byte, msg *types.Message) (*types.SignedMessage, error) {
 	mb, err := msg.ToStorageBlock()
@@ -80,6 +85,10 @@ func WalletSignMessage(typ types.KeyType, pk []byte, msg *types.Message) (*types
 		Message:   msg,
 		Signature: sig,
 	}, nil
+}
+
+func WalletVerifyMessage(sm *types.SignedMessage) error {
+	return WalletVerify(sm.Signature, sm.Message.From, sm.Message.Cid().Bytes())
 }
 
 func ActSigType(typ types.KeyType) crypto.SigType {

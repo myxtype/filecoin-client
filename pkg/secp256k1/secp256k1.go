@@ -56,7 +56,14 @@ func Sign(sk, msg []byte) ([]byte, error) {
 
 // EcRecover recovers the public key from a message, signature pair.
 func EcRecover(msg, signature []byte) ([]byte, error) {
-	pk, _, err := btcec.RecoverCompact(btcec.S256(), signature, msg)
+	var sig = make([]byte, 65)
+	copy(sig, signature)
+
+	v := sig[64] + 27
+	copy(sig[1:], sig[:64])
+	sig[0] = v
+
+	pk, _, err := btcec.RecoverCompact(btcec.S256(), sig, msg)
 	if err != nil {
 		return nil, err
 	}
