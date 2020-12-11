@@ -2,19 +2,17 @@ package secp
 
 import (
 	"fmt"
-
 	"github.com/filecoin-project/go-address"
-	"github.com/filecoin-project/go-crypto"
-	crypto2 "github.com/filecoin-project/go-state-types/crypto"
+	"github.com/filecoin-project/go-state-types/crypto"
 	"github.com/minio/blake2b-simd"
-
+	"github.com/myxtype/filecoin-client/pkg/secp256k1"
 	"github.com/myxtype/filecoin-client/sigs"
 )
 
 type secpSigner struct{}
 
 func (secpSigner) GenPrivate() ([]byte, error) {
-	priv, err := crypto.GenerateKey()
+	priv, err := secp256k1.GenerateKey()
 	if err != nil {
 		return nil, err
 	}
@@ -22,12 +20,12 @@ func (secpSigner) GenPrivate() ([]byte, error) {
 }
 
 func (secpSigner) ToPublic(pk []byte) ([]byte, error) {
-	return crypto.PublicKey(pk), nil
+	return secp256k1.PublicKey(pk), nil
 }
 
 func (secpSigner) Sign(pk []byte, msg []byte) ([]byte, error) {
 	b2sum := blake2b.Sum256(msg)
-	sig, err := crypto.Sign(pk, b2sum[:])
+	sig, err := secp256k1.Sign(pk, b2sum[:])
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +35,7 @@ func (secpSigner) Sign(pk []byte, msg []byte) ([]byte, error) {
 
 func (secpSigner) Verify(sig []byte, a address.Address, msg []byte) error {
 	b2sum := blake2b.Sum256(msg)
-	pubk, err := crypto.EcRecover(b2sum[:], sig)
+	pubk, err := secp256k1.EcRecover(b2sum[:], sig)
 	if err != nil {
 		return err
 	}
@@ -55,5 +53,5 @@ func (secpSigner) Verify(sig []byte, a address.Address, msg []byte) error {
 }
 
 func init() {
-	sigs.RegisterSignature(crypto2.SigTypeSecp256k1, secpSigner{})
+	sigs.RegisterSignature(crypto.SigTypeSecp256k1, secpSigner{})
 }

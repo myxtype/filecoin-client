@@ -1,13 +1,12 @@
 package local
 
 import (
+	"fmt"
 	"github.com/filecoin-project/go-address"
 	"github.com/filecoin-project/go-state-types/crypto"
 	"github.com/myxtype/filecoin-client/sigs"
 	"github.com/myxtype/filecoin-client/types"
-	"golang.org/x/xerrors"
-
-	_ "github.com/myxtype/filecoin-client/sigs/bls"
+	// _ "github.com/myxtype/filecoin-client/sigs/bls"
 	_ "github.com/myxtype/filecoin-client/sigs/secp"
 )
 
@@ -15,7 +14,7 @@ import (
 func WalletNew(typ types.KeyType) (*types.KeyInfo, *address.Address, error) {
 	ctyp := ActSigType(typ)
 	if ctyp == crypto.SigTypeUnknown {
-		return nil, nil, xerrors.Errorf("unknown sig type: %s", typ)
+		return nil, nil, fmt.Errorf("unknown sig type: %s", typ)
 	}
 
 	pk, err := sigs.Generate(ctyp)
@@ -46,15 +45,15 @@ func WalletPrivateToAddress(typ crypto.SigType, pk []byte) (*address.Address, er
 	case crypto.SigTypeSecp256k1:
 		addr, err = address.NewSecp256k1Address(publicKey)
 		if err != nil {
-			return nil, xerrors.Errorf("converting Secp256k1 to address: %w", err)
+			return nil, fmt.Errorf("converting Secp256k1 to address: %w", err)
 		}
 	case crypto.SigTypeBLS:
 		addr, err = address.NewBLSAddress(publicKey)
 		if err != nil {
-			return nil, xerrors.Errorf("converting BLS to address: %w", err)
+			return nil, fmt.Errorf("converting BLS to address: %w", err)
 		}
 	default:
-		return nil, xerrors.Errorf("unsupported key type: %s", typ)
+		return nil, fmt.Errorf("unsupported key type: %s", typ)
 	}
 
 	return &addr, nil
@@ -69,12 +68,12 @@ func WalletSign(typ types.KeyType, pk []byte, data []byte) (*crypto.Signature, e
 func WalletSignMessage(typ types.KeyType, pk []byte, msg *types.Message) (*types.SignedMessage, error) {
 	mb, err := msg.ToStorageBlock()
 	if err != nil {
-		return nil, xerrors.Errorf("serializing message: %w", err)
+		return nil, fmt.Errorf("serializing message: %w", err)
 	}
 
 	sig, err := WalletSign(typ, pk, mb.Cid().Bytes())
 	if err != nil {
-		return nil, xerrors.Errorf("failed to sign message: %w", err)
+		return nil, fmt.Errorf("failed to sign message: %w", err)
 	}
 
 	return &types.SignedMessage{

@@ -10,7 +10,6 @@ import (
 	"github.com/ipfs/go-cid"
 	"github.com/shopspring/decimal"
 	cbg "github.com/whyrusleeping/cbor-gen"
-	"golang.org/x/xerrors"
 	"io"
 )
 
@@ -168,7 +167,7 @@ func (t *Message) MarshalCBOR(w io.Writer) error {
 
 	// t.Params ([]uint8) (slice)
 	if len(t.Params) > cbg.ByteArrayMaxLen {
-		return xerrors.Errorf("Byte array in field t.Params was too long")
+		return fmt.Errorf("Byte array in field t.Params was too long")
 	}
 
 	if err := cbg.WriteMajorTypeHeaderBuf(scratch, w, cbg.MajByteString, uint64(len(t.Params))); err != nil {

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/filecoin-project/go-address"
 	"github.com/filecoin-project/go-state-types/crypto"
-	"golang.org/x/xerrors"
 )
 
 // Sign takes in signature type, private key and message. Returns a signature for that message.
@@ -28,7 +27,7 @@ func Sign(sigType crypto.SigType, privkey []byte, msg []byte) (*crypto.Signature
 // Verify verifies signatures
 func Verify(sig *crypto.Signature, addr address.Address, msg []byte) error {
 	if sig == nil {
-		return xerrors.Errorf("signature is nil")
+		return fmt.Errorf("signature is nil")
 	}
 
 	if addr.Protocol() == address.ID {

@@ -57,8 +57,10 @@ import (
 )
 
 func main() {
+	// 指定网络类型
 	address.CurrentNetwork = address.Mainnet
 
+	// 离线生成私钥地址对
 	ki, addr, err := local.WalletNew(types.KTSecp256k1)
 	if err != nil {
 		panic(err)
@@ -85,6 +87,7 @@ func main() {
 		Params:     nil,
 	}
 
+	// 离线签名
 	s, err := local.WalletSignMessage(types.KTSecp256k1, ki.PrivateKey, msg)
 	if err != nil {
 		panic(err)
@@ -93,8 +96,9 @@ func main() {
 	println(hex.EncodeToString(s.Signature.Data))
 	// 47bcbb167fd9040bd02dba02789bc7bc0463c290db1be9b07065c12a64fb84dc546bef7aedfba789d0d7ce2c4532f8fa0d2dd998985ad3ec1a8b064c26e4625a01
 
-	client := filecoin.NewClient("http://127.0.0.1:1234/rpc/v0", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.cF__3r_0IR9KwZ2nLkqcBW8vuPePruZieJAVvTAoUA4")
+	client := filecoin.New("https://1lB5G4SmGdSTikOo7l6vYlsktdd:b58884915362a99b4fc18c2bf8af8358@filecoin.infura.io")
 
+	// 发出消息
 	mid, err := client.MpoolPush(context.Background(), s)
 	if err != nil {
 		panic(err)
@@ -104,16 +108,11 @@ func main() {
 }
 ```
 
-离线签名版我尝试了很多次，但对于交叉编译的情况下不通过，主要是因为这个库`github.com/ipsn/go-secp256k1`
+> 暂时不支持`bls`类型，仅支持`secp256k1`，所以离线签名所有类型请选择`types.KTSecp256k1`
 
-就很郁闷，因为我们的项目太依赖交叉编译了，一般都是直接在开发机编译好，上传到服务器执行。
+# Util
 
-提示这个错误：`go build github.com/ipsn/go-secp256k1: build constraints exclude all Go files in Path`
-
-有人知道怎么弄吗？
-
-问题：
-在Mac Os系统上不能编译为Linux程序，Windows上可正常编译为Linux程序。
+util.go 中提供FIL小数与大数之间的转换，但没有严格测试，请小心使用。
 
 # Lotus文档
 
