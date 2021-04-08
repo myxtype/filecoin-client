@@ -8,7 +8,6 @@ import (
 	"github.com/filecoin-project/go-state-types/abi"
 	block "github.com/ipfs/go-block-format"
 	"github.com/ipfs/go-cid"
-	"github.com/shopspring/decimal"
 	cbg "github.com/whyrusleeping/cbor-gen"
 	"io"
 )
@@ -18,10 +17,10 @@ type Message struct {
 	To         address.Address `json:"To"`
 	From       address.Address `json:"From"`
 	Nonce      uint64          `json:"Nonce"`
-	Value      decimal.Decimal `json:"Value"`
+	Value      abi.TokenAmount `json:"Value"`
 	GasLimit   int64           `json:"GasLimit"`
-	GasFeeCap  decimal.Decimal `json:"GasFeeCap"`
-	GasPremium decimal.Decimal `json:"GasPremium"`
+	GasFeeCap  abi.TokenAmount `json:"GasFeeCap"`
+	GasPremium abi.TokenAmount `json:"GasPremium"`
 	Method     uint64          `json:"Method"`
 	Params     []byte          `json:"Params"`
 }
@@ -32,10 +31,6 @@ func (m *Message) Caller() address.Address {
 
 func (m *Message) Receiver() address.Address {
 	return m.To
-}
-
-func (m *Message) ValueReceived() abi.TokenAmount {
-	return abi.NewTokenAmount(m.Value.IntPart())
 }
 
 func (m *Message) Serialize() ([]byte, error) {
@@ -131,8 +126,7 @@ func (t *Message) MarshalCBOR(w io.Writer) error {
 	}
 
 	// t.Value (big.Int) (struct)
-	tValue := abi.NewTokenAmount(t.Value.IntPart())
-	if err := tValue.MarshalCBOR(w); err != nil {
+	if err := t.Value.MarshalCBOR(w); err != nil {
 		return err
 	}
 
@@ -148,14 +142,12 @@ func (t *Message) MarshalCBOR(w io.Writer) error {
 	}
 
 	// t.GasFeeCap (big.Int) (struct)
-	tGasFeeCap := abi.NewTokenAmount(t.GasFeeCap.IntPart())
-	if err := tGasFeeCap.MarshalCBOR(w); err != nil {
+	if err := t.GasFeeCap.MarshalCBOR(w); err != nil {
 		return err
 	}
 
 	// t.GasPremium (big.Int) (struct)
-	tGasPremium := abi.NewTokenAmount(t.GasPremium.IntPart())
-	if err := tGasPremium.MarshalCBOR(w); err != nil {
+	if err := t.GasPremium.MarshalCBOR(w); err != nil {
 		return err
 	}
 

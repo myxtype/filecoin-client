@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/filecoin-project/go-state-types/crypto"
+	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/ipfs/go-cid"
 	"github.com/shopspring/decimal"
 	"time"
@@ -36,12 +36,7 @@ type ObjStat struct {
 }
 
 type MessageSendSpec struct {
-	MaxFee decimal.Decimal `json:"MaxFee"`
-}
-
-type SignedMessage struct {
-	Message   *Message          `json:"Message"`
-	Signature *crypto.Signature `json:"Signature"`
+	MaxFee abi.TokenAmount `json:"MaxFee"`
 }
 
 type BlockMessages struct {

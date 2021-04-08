@@ -3,6 +3,7 @@ package filecoin
 import (
 	"context"
 	"github.com/filecoin-project/go-address"
+	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/myxtype/filecoin-client/types"
 	"github.com/shopspring/decimal"
 	"testing"
@@ -15,20 +16,22 @@ func TestClient_MpoolPush(t *testing.T) {
 	from, _ := address.NewFromString("t1e3soclcq34tq7wmykp7xkkmpkzjnghumm3syyay")
 	to, _ := address.NewFromString("t1r6egk7djfy7krbw7zdswbgdhep4hge5fecwmsoi")
 
+	// 转移0.001FIL
 	msg := &types.Message{
 		Version:    0,
 		To:         to,
 		From:       from,
 		Nonce:      0,
-		Value:      FromFil(decimal.NewFromFloat(1)),
+		Value:      FromFil(decimal.NewFromFloat(0.001)),
 		GasLimit:   0,
-		GasFeeCap:  decimal.Zero,
-		GasPremium: decimal.Zero,
+		GasFeeCap:  abi.NewTokenAmount(0),
+		GasPremium: abi.NewTokenAmount(0),
 		Method:     0,
 		Params:     nil,
 	}
 
-	maxFee := FromFil(decimal.NewFromFloat(0.00001))
+	// 最大手续费0.0001 FIL
+	maxFee := FromFil(decimal.NewFromFloat(0.0001))
 	msg, err := c.GasEstimateMessageGas(context.Background(), msg, &types.MessageSendSpec{MaxFee: maxFee}, nil)
 	if err != nil {
 		t.Error(err)

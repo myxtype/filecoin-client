@@ -3,14 +3,14 @@ package filecoin
 import (
 	"context"
 	"github.com/filecoin-project/go-address"
+	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/filecoin-project/go-state-types/crypto"
 	"github.com/myxtype/filecoin-client/types"
-	"github.com/shopspring/decimal"
 )
 
 // WalletBalance returns the balance of the given address at the current head of the chain.
-func (c *Client) WalletBalance(ctx context.Context, addr address.Address) (decimal.Decimal, error) {
-	var balance decimal.Decimal
+func (c *Client) WalletBalance(ctx context.Context, addr address.Address) (abi.TokenAmount, error) {
+	var balance abi.TokenAmount
 	return balance, c.Request(ctx, c.FilecoinMethod("WalletBalance"), &balance, addr)
 }
 

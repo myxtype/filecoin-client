@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"github.com/filecoin-project/go-address"
+	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/myxtype/filecoin-client"
 	"github.com/myxtype/filecoin-client/local"
 	"github.com/myxtype/filecoin-client/types"
@@ -11,8 +12,11 @@ import (
 )
 
 func main() {
+	// 设置网络类型
 	address.CurrentNetwork = address.Mainnet
 
+	// 生产新的地址
+	// 新地址有转入fil才激活，不然没法用
 	ki, addr, err := local.WalletNew(types.KTSecp256k1)
 	if err != nil {
 		panic(err)
@@ -26,18 +30,30 @@ func main() {
 
 	to, _ := address.NewFromString("f1yfi4yslez2hz3ori5grvv3xdo3xkibc4v6xjusy")
 
+	// 转移0.001FIL到f1yfi4yslez2hz3ori5grvv3xdo3xkibc4v6xjusy
 	msg := &types.Message{
 		Version:    0,
 		To:         to,
 		From:       *addr,
 		Nonce:      0,
-		Value:      decimal.NewFromInt(10000),
+		Value:      filecoin.FromFil(decimal.NewFromFloat(0.001)),
 		GasLimit:   0,
-		GasFeeCap:  decimal.NewFromInt(10000),
-		GasPremium: decimal.NewFromInt(10000),
+		GasFeeCap:  abi.NewTokenAmount(10000),
+		GasPremium: abi.NewTokenAmount(10000),
 		Method:     0,
 		Params:     nil,
 	}
+
+	client := filecoin.New("https://1lB5G4SmGdSTikOo7l6vYlsktdd:b58884915362a99b4fc18c2bf8af8358@filecoin.infura.io")
+
+	// 最大手续费0.0001 FIL
+	//maxFee := filecoin.FromFil(decimal.NewFromFloat(0.0001))
+
+	// 估算GasLimit
+	//msg, err = client.GasEstimateMessageGas(context.Background(), msg, &types.MessageSendSpec{MaxFee: maxFee}, nil)
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	// 离线签名
 	s, err := local.WalletSignMessage(types.KTSecp256k1, ki.PrivateKey, msg)
@@ -52,8 +68,6 @@ func main() {
 	if err := local.WalletVerifyMessage(s); err != nil {
 		panic(err)
 	}
-
-	client := filecoin.New("https://1lB5G4SmGdSTikOo7l6vYlsktdd:b58884915362a99b4fc18c2bf8af8358@filecoin.infura.io")
 
 	mid, err := client.MpoolPush(context.Background(), s)
 	if err != nil {

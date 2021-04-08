@@ -10,7 +10,7 @@ import (
 func TestClient_ChainGetMessage(t *testing.T) {
 	c := testClient()
 
-	id, err := cid.Parse("bafy2bzacebrx3sb5do2b7cqgsnys2lkxtdq3pvjtgmdt2wclwmrtjeraa7x3q")
+	id, err := cid.Parse("bafy2bzacebrnc5tactfdeddxmpiyy5wppfc4gyc45zscwymn4r2pm4uwmasx4")
 	if err != nil {
 		t.Error(err)
 	}
@@ -21,6 +21,7 @@ func TestClient_ChainGetMessage(t *testing.T) {
 	}
 
 	t.Log(msg)
+	t.Log(msg.Cid().String())
 }
 
 // 获取当前头部高度
@@ -49,7 +50,7 @@ func TestClient_ChainHead(t *testing.T) {
 func TestClient_ChainGetTipSetByHeight(t *testing.T) {
 	c := testClient()
 
-	ts, err := c.ChainGetTipSetByHeight(context.Background(), 1201, nil)
+	ts, err := c.ChainGetTipSetByHeight(context.Background(), 652243, nil)
 	if err != nil {
 		t.Error(err)
 	}
