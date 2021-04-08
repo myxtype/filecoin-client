@@ -51,6 +51,7 @@ import (
 	"context"
 	"encoding/hex"
 	"github.com/filecoin-project/go-address"
+	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/myxtype/filecoin-client"
 	"github.com/myxtype/filecoin-client/local"
 	"github.com/myxtype/filecoin-client/types"
@@ -58,10 +59,11 @@ import (
 )
 
 func main() {
-	// 指定网络类型
+	// 设置网络类型
 	address.CurrentNetwork = address.Mainnet
 
-	// 离线生成私钥地址对
+	// 生产新的地址
+	// 新地址有转入fil才激活，不然没法用
 	ki, addr, err := local.WalletNew(types.KTSecp256k1)
 	if err != nil {
 		panic(err)
@@ -75,18 +77,30 @@ func main() {
 
 	to, _ := address.NewFromString("f1yfi4yslez2hz3ori5grvv3xdo3xkibc4v6xjusy")
 
+	// 转移0.001FIL到f1yfi4yslez2hz3ori5grvv3xdo3xkibc4v6xjusy
 	msg := &types.Message{
 		Version:    0,
 		To:         to,
 		From:       *addr,
 		Nonce:      0,
-		Value:      decimal.NewFromInt(10000),
+		Value:      filecoin.FromFil(decimal.NewFromFloat(0.001)),
 		GasLimit:   0,
-		GasFeeCap:  decimal.NewFromInt(10000),
-		GasPremium: decimal.NewFromInt(10000),
+		GasFeeCap:  abi.NewTokenAmount(10000),
+		GasPremium: abi.NewTokenAmount(10000),
 		Method:     0,
 		Params:     nil,
 	}
+
+	client := filecoin.New("https://1lB5G4SmGdSTikOo7l6vYlsktdd:b58884915362a99b4fc18c2bf8af8358@filecoin.infura.io")
+
+	// 最大手续费0.0001 FIL
+	//maxFee := filecoin.FromFil(decimal.NewFromFloat(0.0001))
+
+	// 估算GasLimit
+	//msg, err = client.GasEstimateMessageGas(context.Background(), msg, &types.MessageSendSpec{MaxFee: maxFee}, nil)
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	// 离线签名
 	s, err := local.WalletSignMessage(types.KTSecp256k1, ki.PrivateKey, msg)
@@ -97,9 +111,11 @@ func main() {
 	println(hex.EncodeToString(s.Signature.Data))
 	// 47bcbb167fd9040bd02dba02789bc7bc0463c290db1be9b07065c12a64fb84dc546bef7aedfba789d0d7ce2c4532f8fa0d2dd998985ad3ec1a8b064c26e4625a01
 
-	client := filecoin.New("https://1lB5G4SmGdSTikOo7l6vYlsktdd:b58884915362a99b4fc18c2bf8af8358@filecoin.infura.io")
+	// 验证签名
+	if err := local.WalletVerifyMessage(s); err != nil {
+		panic(err)
+	}
 
-	// 发出消息
 	mid, err := client.MpoolPush(context.Background(), s)
 	if err != nil {
 		panic(err)
@@ -107,14 +123,20 @@ func main() {
 
 	println(mid.String())
 }
+
 ```
 
 > 暂时不支持`bls`类型，仅支持`secp256k1`，所以离线签名所有类型请选择`types.KTSecp256k1`
+
 > 私钥存储在数据库请进行加密存储，建议进行AES加密，将AES密钥放在代码中，别放配置文件，编译到执行文件中。
 
 # Util
 
 util.go 中提供FIL小数与大数之间的转换，但没有严格测试，请小心使用。
+
+# 充值流程
+
+参见：/examples/recharge
 
 # Lotus文档
 
