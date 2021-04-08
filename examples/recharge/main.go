@@ -65,6 +65,8 @@ func (job *RechargeFilJob) handleMessage(msgCid cid.Cid, msg *types.Message) err
 
 	value := filecoin.ToFil(msg.Value)
 
+	// 有可能重复
+	// 请根据msgCid自行去重复
 	println(msgCid.String(), value.String())
 
 	// todo
