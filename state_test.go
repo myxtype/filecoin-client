@@ -2,6 +2,7 @@ package filecoin
 
 import (
 	"context"
+	"github.com/filecoin-project/go-address"
 	"github.com/ipfs/go-cid"
 	"testing"
 )
@@ -43,4 +44,26 @@ func TestClient_StateSearchMsg(t *testing.T) {
 	} else {
 		t.Log(msg)
 	}
+}
+
+func TestClient_StateGetActor(t *testing.T) {
+	c := testClient()
+
+	address.CurrentNetwork = address.Mainnet
+
+	addr, _ := address.NewFromString("f3qx3jo74v6d6z35qhfeax3xozsegzliowrrchuyumshnwb2kz66xajhl55pxjr5xvvpeggioytv7uko5hpzga")
+
+	actor, err := c.StateGetActor(context.Background(), addr, nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log(actor.Nonce)
+
+	nonce, err := c.MpoolGetNonce(context.Background(), addr)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log(nonce)
 }
