@@ -3,9 +3,17 @@ package local
 import (
 	"encoding/hex"
 	"github.com/filecoin-project/go-address"
+	"github.com/myxtype/filecoin-client/sigs/bls"
+	"github.com/myxtype/filecoin-client/sigs/secp"
 	"github.com/myxtype/filecoin-client/types"
 	"testing"
 )
+
+func TestMain(t *testing.M){
+	bls.Init()
+	secp.Init()
+	t.Run()
+}
 
 func TestWalletNew(t *testing.T) {
 
