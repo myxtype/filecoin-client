@@ -26,12 +26,8 @@ type Message struct {
 }
 
 type ParentMessage struct {
-	Cid     Cid     `json:"Cid"`
+	Cid     cid.Cid `json:"Cid"`
 	Message Message `json:"Message"`
-}
-
-type Cid struct {
-	Cid string `json:"/"`
 }
 
 func (m *Message) Caller() address.Address {

@@ -82,13 +82,12 @@ func TestClient_ChainGetParentMessages(t *testing.T) {
 	t.Log(len(pms))
 	for _, pm := range pms {
 		address.CurrentNetwork = address.Mainnet
-		cid := pm.Cid.Cid
 		from := pm.Message.From.String()
 		to := pm.Message.To.String()
 		value := pm.Message.Value
-		t.Log(cid)
+		t.Log(pm.Cid.String())
 		t.Log(from)
 		t.Log(to)
-		t.Log(value)
+		t.Log(ToFil(value).String())
 	}
 }
