@@ -20,7 +20,7 @@ func (c *Client) ChainGetBlockMessages(ctx context.Context, id cid.Cid) (*types.
 }
 
 // ChainHead returns the current head of the chain.
-func (c *Client) ChainHead(ctx context.Context, ) (*types.TipSet, error) {
+func (c *Client) ChainHead(ctx context.Context) (*types.TipSet, error) {
 	var ts *types.TipSet
 	return ts, c.Request(ctx, c.FilecoinMethod("ChainHead"), &ts)
 }
@@ -56,8 +56,8 @@ func (c *Client) ChainGetNode(ctx context.Context, p string) (*types.IpldObject,
 }
 
 // ChainGetParentMessages returns messages stored in parent tipset of the specified block.
-func (c *Client) ChainGetParentMessages(ctx context.Context, id cid.Cid) ([]types.Message, error) {
-	var msgs []types.Message
+func (c *Client) ChainGetParentMessages(ctx context.Context, id cid.Cid) ([]types.ParentMessage, error) {
+	var msgs []types.ParentMessage
 	return msgs, c.Request(ctx, c.FilecoinMethod("ChainGetParentMessages"), &msgs, id)
 }
 

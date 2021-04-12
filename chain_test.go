@@ -2,6 +2,7 @@ package filecoin
 
 import (
 	"context"
+	"github.com/filecoin-project/go-address"
 	"github.com/ipfs/go-cid"
 	"testing"
 )
@@ -62,5 +63,32 @@ func TestClient_ChainGetTipSetByHeight(t *testing.T) {
 		for index, msg := range bm.BlsMessages {
 			t.Log(bm.Cids[index], msg)
 		}
+	}
+}
+
+// 遍历区块的 parentMessages
+func TestClient_ChainGetParentMessages(t *testing.T) {
+	var blockHeight int64 = 646458
+	c := testClient()
+	tipSet, err := c.ChainGetTipSetByHeight(context.Background(), blockHeight, nil)
+	if err != nil {
+		t.Error(err)
+	}
+	//同一个 tipSet 下的 block 的 parentMessages 相同
+	pms, err := c.ChainGetParentMessages(context.Background(), tipSet.Cids[0])
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(len(pms))
+	for _, pm := range pms {
+		address.CurrentNetwork = address.Mainnet
+		cid := pm.Cid.Cid
+		from := pm.Message.From.String()
+		to := pm.Message.To.String()
+		value := pm.Message.Value
+		t.Log(cid)
+		t.Log(from)
+		t.Log(to)
+		t.Log(value)
 	}
 }
