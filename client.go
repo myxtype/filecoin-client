@@ -89,6 +89,10 @@ func (c *Client) Request(ctx context.Context, method string, result interface{},
 		return err
 	}
 
+	if rsp.StatusCode != http.StatusOK {
+		return fmt.Errorf("Error Status: %v, Body: %s", rsp.StatusCode, body)
+	}
+
 	response := &clientResponse{}
 	if err := json.Unmarshal(body, response); err != nil {
 		return err
