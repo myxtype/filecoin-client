@@ -52,6 +52,6 @@ func (secpSigner) Verify(sig []byte, a address.Address, msg []byte) error {
 	return nil
 }
 
-func init() {
+func Init() {
 	sigs.RegisterSignature(crypto.SigTypeSecp256k1, secpSigner{})
 }

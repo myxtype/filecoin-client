@@ -53,7 +53,7 @@ func WalletPrivateToAddress(typ crypto.SigType, pk []byte) (*address.Address, er
 			return nil, fmt.Errorf("converting BLS to address: %w", err)
 		}
 	default:
-		return nil, fmt.Errorf("unsupported key type: %s", typ)
+		return nil, fmt.Errorf("unsupported key type: %v", typ)
 	}
 
 	return &addr, nil

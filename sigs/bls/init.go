@@ -56,6 +56,6 @@ func (blsSigner) Verify(sig []byte, a address.Address, msg []byte) error {
 	return nil
 }
 
-func init() {
+func Init() {
 	sigs.RegisterSignature(crypto.SigTypeBLS, blsSigner{})
 }
